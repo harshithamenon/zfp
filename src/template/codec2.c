@@ -1,4 +1,4 @@
-#define index(i, j) ((i) + 4 * (j))
+#define index(i, j) ((i) + 6 * (j))
 
 /* order coefficients (i, j) by i + j, then i^2 + j^2 */
 //cache_align_(static const uchar perm_2[16]) = {
