@@ -136,6 +136,7 @@ _t2(decode_block, Int, DIMS)(bitstream* stream, int minbits, int maxbits, int ma
   /* reorder unsigned coefficients and convert to signed integer */
   _t1(inv_order, Int)(ublock, iblock, PERM, BLOCK_SIZE);
   /* perform decorrelating transform */
-  _t2(inv_xform, Int, DIMS)(iblock);
+  // Note: Commented out for transform experiment
+  //_t2(inv_xform, Int, DIMS)(iblock);
   return bits;
 }

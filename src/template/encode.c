@@ -142,7 +142,8 @@ _t2(encode_block, Int, DIMS)(bitstream* stream, int minbits, int maxbits, int ma
   int bits;
   cache_align_(UInt ublock[BLOCK_SIZE]);
   /* perform decorrelating transform */
-  _t2(fwd_xform, Int, DIMS)(iblock);
+  // Note: Commented out for transform experiments
+  //_t2(fwd_xform, Int, DIMS)(iblock);
   /* reorder signed coefficients and convert to unsigned integer */
   _t1(fwd_order, Int)(ublock, iblock, PERM, BLOCK_SIZE);
   /* encode integer coefficients */
