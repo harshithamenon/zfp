@@ -59,7 +59,7 @@ _t2(rev_encode_block, Int, DIMS)(bitstream* stream, int minbits, int maxbits, in
   /* perform decorrelating transform */
   _t2(rev_fwd_xform, Int, DIMS)(iblock);
   /* reorder signed coefficients and convert to unsigned integer */
-  _t1(fwd_order, Int)(ublock, iblock, PERM, BLOCK_SIZE);
+  _t1(fwd_order, Int)(ublock, iblock, PERM[ZFP_DEFAULT_GRID_SIZE-1], BLOCK_SIZE);
   /* determine and encode number of significant bits */
   prec = _t1(rev_precision, UInt)(ublock, BLOCK_SIZE);
   prec = MIN(prec, maxprec);

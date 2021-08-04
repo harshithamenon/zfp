@@ -55,20 +55,22 @@ static uint
 _t2(encode_block, Scalar, DIMS)(zfp_stream* zfp, const Scalar* fblock)
 {
   uint bits = 1;
+  uint grid_size = zfp->grid_size;
   /* compute maximum exponent */
-  int emax = _t1(exponent_block, Scalar)(fblock, BLOCK_SIZE);
+  int emax = _t1(exponent_block, Scalar)(fblock, BLOCK_SIZE_N(grid_size));
   int maxprec = precision(emax, zfp->maxprec, zfp->minexp, DIMS);
   uint e = maxprec ? emax + EBIAS : 0;
   /* encode block only if biased exponent is nonzero */
   if (e) {
-    cache_align_(Int iblock[BLOCK_SIZE]);
+    
+    cache_align_(Int iblock[BLOCK_SIZE_MAX]);
     /* encode common exponent; LSB indicates that exponent is nonzero */
     bits += EBITS;
     stream_write_bits(zfp->stream, 2 * e + 1, bits);
     /* perform forward block-floating-point transform */
-    _t1(fwd_cast, Scalar)(iblock, fblock, BLOCK_SIZE, emax);
+    _t1(fwd_cast, Scalar)(iblock, fblock, BLOCK_SIZE_N(grid_size), emax);
     /* encode integer block */
-    bits += _t2(encode_block, Int, DIMS)(zfp->stream, zfp->minbits - bits, zfp->maxbits - bits, maxprec, iblock);
+    bits += _t2(encode_block, Int, DIMS)(zfp->stream, zfp->minbits - bits, zfp->maxbits - bits, maxprec, iblock, grid_size);
   }
   else {
     /* write single zero-bit to indicate that all values are zero */

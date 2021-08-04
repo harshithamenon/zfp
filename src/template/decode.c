@@ -119,22 +119,24 @@ _t1(decode_many_ints, UInt)(bitstream* restrict_ stream, uint maxbits, uint maxp
 
 /* decode block of integers */
 static uint
-_t2(decode_block, Int, DIMS)(bitstream* stream, int minbits, int maxbits, int maxprec, Int* iblock)
+_t2(decode_block, Int, DIMS)(bitstream* stream, int minbits, int maxbits, int maxprec, Int* iblock, uint grid_size)
 {
   int bits;
-  cache_align_(UInt ublock[BLOCK_SIZE]);
+
+  // Note: accommodate different block sizes
+  cache_align_(UInt ublock[BLOCK_SIZE_MAX]);
   /* decode integer coefficients */
-  if (BLOCK_SIZE <= 64)
-    bits = _t1(decode_ints, UInt)(stream, maxbits, maxprec, ublock, BLOCK_SIZE);
+  if (BLOCK_SIZE_N(grid_size) <= 64)
+    bits = _t1(decode_ints, UInt)(stream, maxbits, maxprec, ublock, BLOCK_SIZE_N(grid_size));
   else
-    bits = _t1(decode_many_ints, UInt)(stream, maxbits, maxprec, ublock, BLOCK_SIZE);
+    bits = _t1(decode_many_ints, UInt)(stream, maxbits, maxprec, ublock, BLOCK_SIZE_N(grid_size));
   /* read at least minbits bits */
   if (bits < minbits) {
     stream_skip(stream, minbits - bits);
     bits = minbits;
   }
   /* reorder unsigned coefficients and convert to signed integer */
-  _t1(inv_order, Int)(ublock, iblock, PERM, BLOCK_SIZE);
+  _t1(inv_order, Int)(ublock, iblock, PERM[grid_size-1], BLOCK_SIZE_N(grid_size));
   /* perform decorrelating transform */
   // Note: Commented out for transform experiment
   //_t2(inv_xform, Int, DIMS)(iblock);

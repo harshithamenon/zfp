@@ -137,20 +137,21 @@ _t1(encode_many_ints, UInt)(bitstream* restrict_ stream, uint maxbits, uint maxp
 
 /* encode block of integers */
 static uint
-_t2(encode_block, Int, DIMS)(bitstream* stream, int minbits, int maxbits, int maxprec, Int* iblock)
+_t2(encode_block, Int, DIMS)(bitstream* stream, int minbits, int maxbits, int maxprec, Int* iblock, uint grid_size)
 {
   int bits;
-  cache_align_(UInt ublock[BLOCK_SIZE]);
+
+  cache_align_(UInt ublock[BLOCK_SIZE_MAX]);
   /* perform decorrelating transform */
   // Note: Commented out for transform experiments
   //_t2(fwd_xform, Int, DIMS)(iblock);
   /* reorder signed coefficients and convert to unsigned integer */
-  _t1(fwd_order, Int)(ublock, iblock, PERM, BLOCK_SIZE);
+  _t1(fwd_order, Int)(ublock, iblock, PERM[grid_size-1], BLOCK_SIZE_N(grid_size));
   /* encode integer coefficients */
-  if (BLOCK_SIZE <= 64)
-    bits = _t1(encode_ints, UInt)(stream, maxbits, maxprec, ublock, BLOCK_SIZE);
+  if (BLOCK_SIZE_N(grid_size) <= 64)
+    bits = _t1(encode_ints, UInt)(stream, maxbits, maxprec, ublock, BLOCK_SIZE_N(grid_size));
   else
-    bits = _t1(encode_many_ints, UInt)(stream, maxbits, maxprec, ublock, BLOCK_SIZE);
+    bits = _t1(encode_many_ints, UInt)(stream, maxbits, maxprec, ublock, BLOCK_SIZE_N(grid_size));
   /* write at least minbits bits by padding with zeros */
   if (bits < minbits) {
     stream_pad(stream, minbits - bits);

@@ -547,7 +547,7 @@ zfp_stream_mode(const zfp_stream* zfp)
 }
 
 void
-zfp_stream_params(const zfp_stream* zfp, uint* minbits, uint* maxbits, uint* maxprec, int* minexp)
+zfp_stream_params(const zfp_stream* zfp, uint* minbits, uint* maxbits, uint* maxprec, int* minexp, uint* grid_size)
 {
   if (minbits)
     *minbits = zfp->minbits;
@@ -557,6 +557,8 @@ zfp_stream_params(const zfp_stream* zfp, uint* minbits, uint* maxbits, uint* max
     *maxprec = zfp->maxprec;
   if (minexp)
     *minexp = zfp->minexp;
+  if (grid_size)
+    *grid_size = zfp->grid_size;
 }
 
 size_t
@@ -670,6 +672,13 @@ zfp_stream_set_accuracy(zfp_stream* zfp, double tolerance)
   return tolerance > 0 ? ldexp(1.0, emin) : 0;
 }
 
+uint
+zfp_stream_set_grid_size(zfp_stream* zfp, uint grid_size)
+{
+  zfp->grid_size = grid_size;
+  return zfp->grid_size;
+}
+
 zfp_mode
 zfp_stream_set_mode(zfp_stream* zfp, uint64 mode)
 {
@@ -714,14 +723,16 @@ zfp_stream_set_mode(zfp_stream* zfp, uint64 mode)
     mode >>=  7; minexp  = ((uint)mode & 0x7fffu) - 16495;
   }
 
-  if (!zfp_stream_set_params(zfp, minbits, maxbits, maxprec, minexp))
+  uint grid_size = ZFP_DEFAULT_GRID_SIZE; 
+
+  if (!zfp_stream_set_params(zfp, minbits, maxbits, maxprec, minexp, grid_size))
     return zfp_mode_null;
 
   return zfp_stream_compression_mode(zfp);
 }
 
 int
-zfp_stream_set_params(zfp_stream* zfp, uint minbits, uint maxbits, uint maxprec, int minexp)
+zfp_stream_set_params(zfp_stream* zfp, uint minbits, uint maxbits, uint maxprec, int minexp, uint grid_size)
 {
   if (minbits > maxbits || !(0 < maxprec && maxprec <= 64))
     return 0;
@@ -729,6 +740,7 @@ zfp_stream_set_params(zfp_stream* zfp, uint minbits, uint maxbits, uint maxprec,
   zfp->maxbits = maxbits;
   zfp->maxprec = maxprec;
   zfp->minexp = minexp;
+  zfp->grid_size = grid_size;
   return 1;
 }
 

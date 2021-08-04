@@ -97,6 +97,7 @@
 #define ZFP_MAX_BITS 16657 /* maximum number of bits per block */
 #define ZFP_MAX_PREC    64 /* maximum precision supported */
 #define ZFP_MIN_EXP  -1074 /* minimum floating-point base-2 exponent */
+#define ZFP_DEFAULT_GRID_SIZE 4
 
 /* header masks (enable via bitwise or; reader must use same mask) */
 #define ZFP_HEADER_MAGIC  0x1u /* embed 64-bit magic */
@@ -148,6 +149,7 @@ typedef struct {
   int minexp;         /* minimum floating point bit plane number to store */
   bitstream* stream;  /* compressed bit stream */
   zfp_execution exec; /* execution policy and parameters */
+  uint grid_size;
 } zfp_stream;
 
 /* compression mode */
@@ -235,7 +237,8 @@ zfp_stream_params(
   uint* minbits,            /* minimum number of bits per 4^d block */
   uint* maxbits,            /* maximum number of bits per 4^d block */
   uint* maxprec,            /* maximum precision (# bit planes coded) */
-  int* minexp               /* minimum base-2 exponent; error <= 2^minexp */
+  int* minexp,               /* minimum base-2 exponent; error <= 2^minexp */
+  uint* grid_size
 );
 
 /* byte size of sequentially compressed stream (call after compression) */
@@ -303,6 +306,12 @@ zfp_stream_set_mode(
   uint64 mode         /* 12- or 64-bit encoding of parameters */
 );
 
+uint
+zfp_stream_set_grid_size(
+  zfp_stream* stream,
+  uint gsize
+);
+
 /* set all parameters (expert mode); leaves stream intact on failure */
 int                   /* nonzero upon success */
 zfp_stream_set_params(
@@ -310,7 +319,8 @@ zfp_stream_set_params(
   uint minbits,       /* minimum number of bits per 4^d block */
   uint maxbits,       /* maximum number of bits per 4^d block */
   uint maxprec,       /* maximum precision (# bit planes coded) */
-  int minexp          /* minimum base-2 exponent; error <= 2^minexp */
+  int minexp,          /* minimum base-2 exponent; error <= 2^minexp */
+  uint grid_size
 );
 
 /* high-level API: execution policy ---------------------------------------- */

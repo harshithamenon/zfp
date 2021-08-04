@@ -48,7 +48,7 @@ _t2(rev_decode_block, Int, DIMS)(bitstream* stream, int minbits, int maxbits, In
     bits = minbits;
   }
   /* reorder unsigned coefficients and convert to signed integer */
-  _t1(inv_order, Int)(ublock, iblock, PERM, BLOCK_SIZE);
+  _t1(inv_order, Int)(ublock, iblock, PERM[ZFP_DEFAULT_GRID_SIZE-1], BLOCK_SIZE);
   /* perform decorrelating transform */
   _t2(rev_inv_xform, Int, DIMS)(iblock);
   return bits;

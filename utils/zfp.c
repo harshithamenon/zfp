@@ -149,6 +149,7 @@ int main(int argc, char* argv[])
   uint maxbits = ZFP_MAX_BITS;
   uint maxprec = ZFP_MAX_PREC;
   int minexp = ZFP_MIN_EXP;
+  uint grid_size = ZFP_DEFAULT_GRID_SIZE;
   int header = 0;
   int quiet = 0;
   int stats = 0;
@@ -463,7 +464,7 @@ int main(int argc, char* argv[])
           maxbits = ZFP_MAX_BITS;
         if (!maxprec)
           maxprec = zfp_field_precision(field);
-        if (!zfp_stream_set_params(zfp, minbits, maxbits, maxprec, minexp)) {
+        if (!zfp_stream_set_params(zfp, minbits, maxbits, maxprec, minexp, grid_size)) {
           fprintf(stderr, "invalid compression parameters\n");
           return EXIT_FAILURE;
         }
