@@ -1,7 +1,7 @@
 #define index(i, j, k, gsize) ((i) + gsize * ((j) + gsize * (k)))
 
 /* order coefficients (i, j, k) by i + j + k, then i^2 + j^2 + k^2 */
-cache_align_(static const uchar perm_3[][729]) = {
+cache_align_(static const uint perm_3[][512]) = {
   { /* order 0 */
     index(0, 0, 0, 1), /*   0 :  0 */
   },

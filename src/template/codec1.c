@@ -1,5 +1,5 @@
 #define index(i) (i)
-cache_align_(static const uchar perm_1[][8]) = {
+cache_align_(static const uint perm_1[][8]) = {
   { /* order 0 */
     index(0), /*   0 :  0 */
   },

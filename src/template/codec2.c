@@ -1,7 +1,7 @@
 #define index(i, j, gsize) ((i) + gsize * (j))
 
 /* order coefficients (i, j) by i + j, then i^2 + j^2 */
-cache_align_(static const uchar perm_2[][64]) = {
+cache_align_(static const uint perm_2[][64]) = {
   { /* order 0 */
     index(0, 0, 1), /*   0 :  0 */
   },

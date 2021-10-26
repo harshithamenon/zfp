@@ -42,7 +42,7 @@ _t1(uint2int, UInt)(UInt x)
 
 /* reorder unsigned coefficients and convert to signed integer */
 static void
-_t1(inv_order, Int)(const UInt* ublock, Int* iblock, const uchar* perm, uint n)
+_t1(inv_order, Int)(const UInt* ublock, Int* iblock, const uint* perm, uint n)
 {
   do
     iblock[*perm++] = _t1(uint2int, UInt)(*ublock++);

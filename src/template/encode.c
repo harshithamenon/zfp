@@ -64,7 +64,7 @@ _t1(int2uint, Int)(Int x)
 
 /* reorder signed coefficients and convert to unsigned integer */
 static void
-_t1(fwd_order, Int)(UInt* ublock, const Int* iblock, const uchar* perm, uint n)
+_t1(fwd_order, Int)(UInt* ublock, const Int* iblock, const uint* perm, uint n)
 {
   do
     *ublock++ = _t1(int2uint, Int)(iblock[*perm++]);
